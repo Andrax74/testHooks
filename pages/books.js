@@ -27,7 +27,7 @@ const Books = () => {
     }
 
     return (
-        <div class="flex-card">
+        <div className="flex-card">
             <h2>Libri Disponibili</h2>
             {viewAllBooks}
         </div>

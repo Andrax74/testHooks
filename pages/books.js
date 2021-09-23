@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import BooksCard from "../src/components/BooksCard";
+import Loading from "../src/components/Loading";
 
 const Books = () => {
 
@@ -16,6 +17,7 @@ const Books = () => {
     */
 
     const[nome, setNome] = useState("");
+    const[isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         console.log("Otteniamo i dati dalla web api");
@@ -26,6 +28,7 @@ const Books = () => {
             })
             .then(data => {
                 setLibri(data);
+                setIsLoading(false);
             })
     },[]);
 
@@ -49,7 +52,8 @@ const Books = () => {
         <div>
             <div className="flex-card">
                 <h2>Libri Disponibili</h2>
-                {viewAllBooks}
+                {isLoading && <Loading />}
+                {!isLoading && viewAllBooks}
             </div>
             <div>
                 <button onClick={() => setNome("Nicola")}>Nome Lettore</button>

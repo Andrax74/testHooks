@@ -18,16 +18,27 @@ const Books = () => {
 
     const[nome, setNome] = useState("");
     const[isLoading, setIsLoading] = useState(true);
+    const[error, setError] = useState("");
 
     useEffect(() => {
         console.log("Otteniamo i dati dalla web api");
         
         fetch('http://localhost:5051/api/libri')
             .then(res => {
+
+                if (!res.ok) {
+                    throw Error("Errore Ottenimento Dati da Web Api");
+                }
+
                 return res.json();
             })
             .then(data => {
                 setLibri(data);
+                setIsLoading(false);
+            })
+            .catch(err => {
+                console.log(err.message);
+                setError(err.message);
                 setIsLoading(false);
             })
     },[]);
@@ -53,7 +64,10 @@ const Books = () => {
             <div className="flex-card">
                 <h2>Libri Disponibili</h2>
                 {isLoading && <Loading />}
-                {!isLoading && viewAllBooks}
+                {!isLoading && !error && viewAllBooks}
+            </div>
+            <div>
+                {error && <div className="errmsg alert alert-danger" role="alert">{error}</div>}
             </div>
             <div>
                 <button onClick={() => setNome("Nicola")}>Nome Lettore</button>

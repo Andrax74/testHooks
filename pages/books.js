@@ -2,12 +2,10 @@ import React, {useEffect, useState} from 'react';
 
 import BooksCard from "../src/components/BooksCard";
 import Loading from "../src/components/Loading";
+import useFetch from './useFetch';
 
 const Books = () => {
 
-    const [libri, setLibri] = useState([
-        { titolo: '', sinossi: '', autore: '', isbn: '', immagine: '' }
-    ]);
     /*
     const [libri, setLibri] = useState([
         { title: 'Grishaverse - Tenebre e ossa    ', body: 'Alina Starkov non ha grandi...', author: 'Leigh Bardugo', id: 1, image: '/static/images/book1.jpg' },
@@ -16,47 +14,23 @@ const Books = () => {
     ])
     */
 
+    const {dati : libri, isLoading, error, handleDelete : handleUpdate} = useFetch('http://localhost:5051/api/libri');
+
     const[nome, setNome] = useState("");
-    const[isLoading, setIsLoading] = useState(true);
-    const[error, setError] = useState("");
-
-    useEffect(() => {
-        console.log("Otteniamo i dati dalla web api");
-        
-        fetch('http://localhost:5051/api/libri')
-            .then(res => {
-
-                if (!res.ok) {
-                    throw Error("Errore Ottenimento Dati da Web Api");
-                }
-
-                return res.json();
-            })
-            .then(data => {
-                setLibri(data);
-                setIsLoading(false);
-            })
-            .catch(err => {
-                console.log(err.message);
-                setError(err.message);
-                setIsLoading(false);
-            })
-    },[]);
 
     const viewAllBooks = libri.map((libro) => (
         <BooksCard
-            key = {libro.isbn}
-            body = {libro.sinossi}
-            title = {libro.titolo}
-            author = {libro.autore}
-            image = {"/static/images/" + libro.immagine}
-            deleteBook = {() => handleDelete(libro.isbn)}
+            key = {libro?.isbn}
+            body = {libro?.sinossi}
+            title = {libro?.titolo}
+            author = {libro?.autore}
+            image = {"/static/images/" + libro?.immagine}
+            deleteBook = {() => handleDelete(libro?.isbn)}
         />
     ))
 
     const handleDelete = (id) => {
-        const newBooks = libri.filter(libri => libri.isbn !== id);
-        setLibri(newBooks);
+        handleUpdate(id);
     }
 
     return (

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import BooksCard from "../src/components/BooksCard";
 import Loading from "../src/components/Loading";
-import useFetch from './useFetch';
+import useAxios from '../hooks/useAxios';
 
 const Books = () => {
 
@@ -14,7 +14,15 @@ const Books = () => {
     ])
     */
 
-    const {dati : libri, isLoading, error, handleDelete : handleUpdate} = useFetch('http://localhost:5051/api/libri');
+    const {dati : libri, loading: isLoading, error, handleDelete : handleUpdate} = useAxios({
+        method: 'GET',
+        url: '',
+        headers: {  
+            accept: '*/*'
+        },
+        data: {  
+        },
+    });
 
     const[nome, setNome] = useState("");
 
@@ -30,7 +38,7 @@ const Books = () => {
     ))
 
     const handleDelete = (id) => {
-        handleUpdate(id);
+        handleUpdate('elimina/' + id);
     }
 
     return (
